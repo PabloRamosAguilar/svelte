@@ -21,6 +21,12 @@ const Articulo = mongoose.model('Articulo', new mongoose.Schema(
     precio: Number
 }));
 
+const Cliente = mongoose.model('Cliente', new mongoose.Schema(
+    {
+        nombre: String,
+        apellido: String
+    }));
+
 app.get("/api/articulos", cors(), (req,res) => {
     Articulo.find( 
         {},
@@ -47,6 +53,31 @@ app.put("/api/articulos/:id", cors(),(req,res) => {
      )
 });
 
+app.get("/api/clientes", cors(), (req,res) => {
+    Cliente.find( 
+        {},
+        (error, data) => {if(error) res.json(error);else res.json(data) }  
+     )
+});
+
+app.post("/api/clientes",cors(), (req,res) => {
+    new Cliente({nombre: req.body.nombre, apellido: req.body.apellido}).save((error,data) => {if (error) res.json(error);else res.json(data)})
+});
+
+app.delete("/api/clientes/:id", cors(),(req,res) => {
+    Cliente.findOneAndRemove( 
+        {_id: req.params.id},
+        (error, data) => {if(error) res.json(error);else res.json(data) }  
+     )
+});
+
+app.put("/api/clientes/:id", cors(),(req,res) => {
+    Cliente.findOneAndUpdate( 
+        {_id: req.params.id},
+        {$set: {nombre: req.body.nombre, apellido: req.body.apellido}},
+        (error, data) => {if(error) res.json(error);else res.json(data) }  
+     )
+});
 
 
 app.listen(PORT, () => {console.log("Iniciando Servidor Web")});
